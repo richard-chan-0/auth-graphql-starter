@@ -1,11 +1,11 @@
 const express = require("express");
 const models = require("./models");
-const expressGraphQL = require("express-graphql");
+const { graphqlHTTP } = require("express-graphql");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportConfig = require("./services/auth");
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 const schema = require("./schema/schema");
 
 // Create a new Express application
@@ -38,9 +38,8 @@ app.use(
     resave: true,
     saveUninitialized: true,
     secret: "aaabbbccc",
-    store: new MongoStore({
-      url: MONGO_URI,
-      autoReconnect: true,
+    store: MongoStore.create({
+      mongoUrl: MONGO_URI,
     }),
   })
 );
@@ -51,12 +50,20 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// The root provides a resolver function for each API endpoint
+var root = {
+  hello: () => {
+    return "Hello world!";
+  },
+};
+
 // Instruct Express to pass on any request made to the '/graphql' route
 // to the GraphQL instance.
 app.use(
   "/graphql",
-  expressGraphQL({
+  graphqlHTTP({
     schema,
+    rootValue: root,
     graphiql: true,
   })
 );
