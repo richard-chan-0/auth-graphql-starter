@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const { GraphQLObjectType, GraphQLString } = graphql;
 
-const UserType = require("./types/user_type");
+const UserType = require("./types/UserType");
 const AuthService = require("../services/auth");
 
 /**
@@ -9,7 +9,7 @@ const AuthService = require("../services/auth");
  *
  * resolve method takes in a context object (express request object for http requests)
  */
-const mutation = new GraphQLObjectType({
+const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
     signup: {
@@ -26,7 +26,8 @@ const mutation = new GraphQLObjectType({
         const { email, password } = args;
         // it is convention to abbreviate context or request to simply req
         const req = context;
-        AuthService.signup({
+
+        return AuthService.signup({
           email,
           password,
           req,
@@ -36,4 +37,4 @@ const mutation = new GraphQLObjectType({
   },
 });
 
-module.exports = mutation;
+module.exports = Mutation;

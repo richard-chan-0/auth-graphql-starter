@@ -10,4 +10,4 @@ const UserType = new GraphQLObjectType({
   },
 });
 
-module.export = UserType;
+module.exports = UserType;
