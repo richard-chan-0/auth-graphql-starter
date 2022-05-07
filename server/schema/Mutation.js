@@ -34,6 +34,33 @@ const Mutation = new GraphQLObjectType({
         });
       },
     },
+    logout: {
+      type: UserType,
+      resolve(parentValue, args, context) {
+        const { user } = context;
+        context.logout();
+        return user;
+      },
+    },
+    login: {
+      type: UserType,
+      args: {
+        email: {
+          type: GraphQLString,
+        },
+        password: {
+          type: GraphQLString,
+        },
+      },
+      resolve(parentValue, args, req) {
+        const { email, password } = args;
+        return AuthService.login({
+          email,
+          password,
+          req,
+        });
+      },
+    },
   },
 });
 
